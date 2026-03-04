@@ -1,5 +1,7 @@
 namespace NodeDesigner.Services.Designer;
 
+using NodeDesigner.Models.Graph;
+
 public interface IDesignerSurfaceHost
 {
     string RendererName { get; }
@@ -15,6 +17,8 @@ public interface IDesignerSurfaceHost
     Task StartAsync(int requestedWidth, int requestedHeight, CancellationToken cancellationToken = default);
 
     Task StopAsync(CancellationToken cancellationToken = default);
+
+    void UpdateGraphPreview(GraphDocument document);
 
     void ForwardPointerInput(
         double x,

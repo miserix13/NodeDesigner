@@ -421,6 +421,7 @@ public sealed partial record DesignerModel : INotifyPropertyChanged
     private void RefreshState()
     {
         RebuildGraphViews();
+        _designerSurfaceHost.UpdateGraphPreview(_document);
         _generatedCode = _generatorService.Generate(_document);
 
         OnPropertyChanged(nameof(ActiveDocumentPath));
