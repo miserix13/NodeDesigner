@@ -262,6 +262,7 @@ public sealed class StrideDesignerSurfaceHost : IDesignerSurfaceHost
         private readonly Func<(GraphDocument Document, int Revision)> _snapshotProvider = snapshotProvider;
         private readonly Dictionary<string, StrideEntity> _nodeEntities = new(StringComparer.Ordinal);
         private readonly Dictionary<string, List<StrideEntity>> _edgeSegmentEntities = new(StringComparer.Ordinal);
+        private readonly Dictionary<string, StrideEntity> _edgeArrowEntities = new(StringComparer.Ordinal);
 
         private Scene? _scene;
         private StrideEntity? _cameraEntity;
@@ -269,6 +270,8 @@ public sealed class StrideDesignerSurfaceHost : IDesignerSurfaceHost
         private Model? _nodeModel;
         private Model? _selectedNodeModel;
         private Model? _edgeModel;
+        private Model? _edgeArrowModel;
+        private Model? _selectedEdgeArrowModel;
         private float _cameraDistance = 24f;
         private Vector2 _cameraCenter = Vector2.Zero;
         private int _lastAppliedRevision = -1;
@@ -287,6 +290,8 @@ public sealed class StrideDesignerSurfaceHost : IDesignerSurfaceHost
             _nodeModel = CreateCubeModel(Services, new Color4(0.24f, 0.56f, 0.92f, 1f), emissiveIntensity: 0.08f);
             _selectedNodeModel = CreateCubeModel(Services, new Color4(0.99f, 0.72f, 0.28f, 1f), emissiveIntensity: 0.22f);
             _edgeModel = CreateCubeModel(Services, new Color4(0.74f, 0.78f, 0.88f, 1f), emissiveIntensity: 0f);
+            _edgeArrowModel = CreateCubeModel(Services, new Color4(0.95f, 0.97f, 1f, 1f), emissiveIntensity: 0.16f);
+            _selectedEdgeArrowModel = CreateCubeModel(Services, new Color4(1f, 0.84f, 0.35f, 1f), emissiveIntensity: 0.44f);
         }
 
         protected override void Update(GameTime gameTime)
@@ -304,7 +309,7 @@ public sealed class StrideDesignerSurfaceHost : IDesignerSurfaceHost
 
         private void ApplyGraphSnapshot(GraphDocument document)
         {
-            if (_scene is null || _nodeModel is null || _selectedNodeModel is null || _edgeModel is null)
+            if (_scene is null || _nodeModel is null || _selectedNodeModel is null || _edgeModel is null || _edgeArrowModel is null || _selectedEdgeArrowModel is null)
             {
                 return;
             }
@@ -435,9 +440,51 @@ public sealed class StrideDesignerSurfaceHost : IDesignerSurfaceHost
                     segmentEntity.Transform.Rotation = Quaternion.BetweenDirections(Vector3.UnitX, segmentDirection);
                     segmentEntity.Transform.Scale = new Vector3(segmentLength, edgeThickness, edgeThickness);
                 }
+
+                if (!_edgeArrowEntities.TryGetValue(edge.Id, out var arrowEntity))
+                {
+                    arrowEntity = new StrideEntity($"edge:{edge.Id}:arrow")
+                    {
+                        new ModelComponent
+                        {
+                            Model = _edgeArrowModel,
+                        },
+                    };
+
+                    _scene.Entities.Add(arrowEntity);
+                    _edgeArrowEntities[edge.Id] = arrowEntity;
+                }
+
+                var isSelectedEdge = selectedIds.Contains(edge.FromNodeId) || selectedIds.Contains(edge.ToNodeId);
+                var arrowModelComponent = arrowEntity.Get<ModelComponent>();
+
+                if (arrowModelComponent is not null)
+                {
+                    arrowModelComponent.Model = isSelectedEdge ? _selectedEdgeArrowModel : _edgeArrowModel;
+                }
+
+                var tipPoint = edgePoints[^1];
+                var preTipPoint = edgePoints[^2];
+                var tipVector = tipPoint - preTipPoint;
+                var tipLength = tipVector.Length();
+
+                if (tipLength > float.Epsilon)
+                {
+                    var tipDirection = tipVector / tipLength;
+                    var arrowLength = Math.Clamp(edgeThickness * 4.2f, 0.28f, 0.48f);
+                    var arrowRadius = Math.Clamp(edgeThickness * 2.4f, 0.16f, 0.22f);
+
+                    arrowEntity.Transform.Position = new Vector3(
+                        tipPoint.X - (tipDirection.X * arrowLength * 0.5f),
+                        tipPoint.Y - (tipDirection.Y * arrowLength * 0.5f),
+                        -0.18f);
+                    arrowEntity.Transform.Rotation = Quaternion.BetweenDirections(Vector3.UnitX, tipDirection);
+                    arrowEntity.Transform.Scale = new Vector3(arrowLength, arrowRadius, arrowRadius);
+                }
             }
 
             RemoveStaleEdgeSegments(_scene, _edgeSegmentEntities, activeEdgeIds);
+            RemoveStaleEntities(_scene, _edgeArrowEntities, activeEdgeIds);
         }
 
         private void CreateCameraAndLights(Scene scene)
