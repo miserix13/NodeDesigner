@@ -1,7 +1,7 @@
-# Getting Started
+# Node Designer
 
-Welcome to the Uno Platform!
+## A visual designer for developing Node.js apps
 
-To discover how to get started with your new app: https://aka.platform.uno/get-started
+## Built on .NET 10 and Uno Platform written in C# / XAML
 
-For more information on how to use the Uno.Sdk or upgrade Uno Platform packages in your solution: https://aka.platform.uno/using-uno-sdk
+## Uses Roslyn APIs and incremental source generators to generate Javascript

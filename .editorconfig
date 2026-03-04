@@ -85,26 +85,26 @@ indent_size = 4
 dotnet_sort_system_directives_first = true
 
 # Avoid "this." and "Me." if not necessary
-dotnet_style_qualification_for_field = false:suggestion
-dotnet_style_qualification_for_property = false:suggestion
-dotnet_style_qualification_for_method = false:suggestion
-dotnet_style_qualification_for_event = false:suggestion
+# dotnet_style_qualification_for_field = false:suggestion
+# dotnet_style_qualification_for_property = false:suggestion
+# dotnet_style_qualification_for_method = false:suggestion
+# dotnet_style_qualification_for_event = false:suggestion
 
 #### Naming styles ####
 
 # Naming rules
 
-dotnet_naming_rule.interface_should_be_begins_with_i.severity = suggestion
-dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface
-dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i
+# dotnet_naming_rule.interface_should_be_begins_with_i.severity = suggestion
+# dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface
+# dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i
 
-dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
-dotnet_naming_rule.types_should_be_pascal_case.symbols = types
-dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
+# dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
+# dotnet_naming_rule.types_should_be_pascal_case.symbols = types
+# dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
 
-dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = suggestion
-dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members
-dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
+# dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = suggestion
+# dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members
+# dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
 
 # Symbol specifications
 
