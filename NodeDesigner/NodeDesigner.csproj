@@ -36,5 +36,8 @@
       SkiaRenderer;
     </UnoFeatures>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Stride.Engine" />
+  </ItemGroup>
 
 </Project>

@@ -5,9 +5,20 @@ namespace NodeDesigner.Services.Designer;
 
 public sealed class GraphEditorService : IGraphEditorService
 {
+    private const double DefaultNodeSpacingX = 220;
+    private const double DefaultNodeSpacingY = 140;
+
     public GraphDocument CreateDocument() => GraphDocument.Empty;
 
     public GraphDocument AddNode(GraphDocument document, string kind)
+    {
+        var index = document.Nodes.Length + 1;
+        var position = new GraphPosition((index - 1) * DefaultNodeSpacingX, ((index - 1) % 5) * DefaultNodeSpacingY);
+
+        return AddNodeAt(document, kind, position);
+    }
+
+    public GraphDocument AddNodeAt(GraphDocument document, string kind, GraphPosition position)
     {
         var index = document.Nodes.Length + 1;
         var nodeId = $"node_{index:D3}_{Guid.NewGuid().ToString("N")[..6]}";
@@ -20,7 +31,7 @@ public sealed class GraphEditorService : IGraphEditorService
         var node = new GraphNode(
             Id: nodeId,
             Kind: kind,
-            Position: new GraphPosition((index - 1) * 220, ((index - 1) % 5) * 140),
+            Position: position,
             Properties: ImmutableDictionary<string, string>.Empty.Add("name", $"Node {index}"),
             Ports: ports
         );
@@ -39,8 +50,25 @@ public sealed class GraphEditorService : IGraphEditorService
             return document;
         }
 
-        var fromNode = document.Nodes[^2];
-        var toNode = document.Nodes[^1];
+        return ConnectNodes(document, document.Nodes[^2].Id, document.Nodes[^1].Id);
+    }
+
+    public GraphDocument ConnectNodes(GraphDocument document, string fromNodeId, string toNodeId)
+    {
+        if (string.IsNullOrWhiteSpace(fromNodeId)
+            || string.IsNullOrWhiteSpace(toNodeId)
+            || string.Equals(fromNodeId, toNodeId, StringComparison.Ordinal))
+        {
+            return document;
+        }
+
+        var fromNode = document.Nodes.FirstOrDefault(node => string.Equals(node.Id, fromNodeId, StringComparison.Ordinal));
+        var toNode = document.Nodes.FirstOrDefault(node => string.Equals(node.Id, toNodeId, StringComparison.Ordinal));
+
+        if (fromNode is null || toNode is null)
+        {
+            return document;
+        }
 
         var fromPort = fromNode.Ports.FirstOrDefault(port => port.Direction == GraphPortDirection.Output);
         var toPort = toNode.Ports.FirstOrDefault(port => port.Direction == GraphPortDirection.Input);
@@ -102,6 +130,37 @@ public sealed class GraphEditorService : IGraphEditorService
         };
     }
 
+    public GraphDocument MoveSelectedNodes(GraphDocument document, double deltaX, double deltaY)
+    {
+        if (document.SelectedNodeIds.Count == 0
+            || (Math.Abs(deltaX) < double.Epsilon && Math.Abs(deltaY) < double.Epsilon))
+        {
+            return document;
+        }
+
+        var selectedNodeIds = document.SelectedNodeIds;
+
+        var nodes = document.Nodes
+            .Select(node =>
+            {
+                if (!selectedNodeIds.Contains(node.Id))
+                {
+                    return node;
+                }
+
+                return node with
+                {
+                    Position = new GraphPosition(node.Position.X + deltaX, node.Position.Y + deltaY),
+                };
+            })
+            .ToImmutableArray();
+
+        return document with
+        {
+            Nodes = nodes,
+        };
+    }
+
     public GraphDocument ToggleNodeSelection(GraphDocument document, string nodeId, bool multiSelect)
     {
         var selected = multiSelect ? document.SelectedNodeIds : ImmutableHashSet<string>.Empty;
@@ -113,6 +172,51 @@ public sealed class GraphEditorService : IGraphEditorService
         return document with
         {
             SelectedNodeIds = selected,
+        };
+    }
+
+    public GraphDocument SetNodeProperty(GraphDocument document, string nodeId, string key, string value)
+    {
+        if (string.IsNullOrWhiteSpace(nodeId) || string.IsNullOrWhiteSpace(key))
+        {
+            return document;
+        }
+
+        var nodeIndex = -1;
+
+        for (var index = 0; index < document.Nodes.Length; index++)
+        {
+            if (string.Equals(document.Nodes[index].Id, nodeId, StringComparison.Ordinal))
+            {
+                nodeIndex = index;
+                break;
+            }
+        }
+
+        if (nodeIndex < 0)
+        {
+            return document;
+        }
+
+        var node = document.Nodes[nodeIndex];
+        var normalizedValue = value ?? string.Empty;
+        var currentValue = node.Properties.TryGetValue(key, out var existing)
+            ? existing
+            : string.Empty;
+
+        if (string.Equals(currentValue, normalizedValue, StringComparison.Ordinal))
+        {
+            return document;
+        }
+
+        var updatedNode = node with
+        {
+            Properties = node.Properties.SetItem(key, normalizedValue),
+        };
+
+        return document with
+        {
+            Nodes = document.Nodes.SetItem(nodeIndex, updatedNode),
         };
     }
 

@@ -7,89 +7,182 @@
       xmlns:um="using:Uno.Material"
       NavigationCacheMode="Required"
       Background="{ThemeResource BackgroundBrush}">
-  <Grid utu:SafeArea.Insets="VisibleBounds">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
-      <RowDefinition />
-    </Grid.RowDefinitions>
-
-    <utu:NavigationBar Content="{Binding Title}" />
-
-    <Grid Grid.Row="1"
-          ColumnSpacing="16"
-          Padding="16">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="280" />
-        <ColumnDefinition Width="2*" />
-        <ColumnDefinition Width="3*" />
-      </Grid.ColumnDefinitions>
-
-      <StackPanel Grid.Column="0" Spacing="8">
-        <Button Content="Back to Main"
-                Command="{Binding GoToMain}" />
-        <Button Content="Add Node"
-                Command="{Binding AddNode}" />
-        <Button Content="Select Last Node"
-                Command="{Binding SelectLastNode}" />
-        <Button Content="Connect Last Two Nodes"
-                Command="{Binding ConnectLastTwoNodes}" />
-        <Button Content="Delete Selected"
-                Command="{Binding DeleteSelectedNodes}" />
-        <Button Content="Clear Selection"
-                Command="{Binding ClearSelection}" />
-        <Button Content="Undo"
-                IsEnabled="{Binding CanUndo}"
-                Command="{Binding Undo}" />
-        <Button Content="Redo"
-                IsEnabled="{Binding CanRedo}"
-                Command="{Binding Redo}" />
-        <Button Content="Pan Left"
-                Command="{Binding PanLeft}" />
-        <Button Content="Pan Right"
-                Command="{Binding PanRight}" />
-        <Button Content="Pan Up"
-                Command="{Binding PanUp}" />
-        <Button Content="Pan Down"
-                Command="{Binding PanDown}" />
-        <Button Content="Zoom In"
-                Command="{Binding ZoomIn}" />
-        <Button Content="Zoom Out"
-                Command="{Binding ZoomOut}" />
-        <Button Content="Save Graph"
-                Command="{Binding SaveGraph}" />
-        <Button Content="Load Graph"
-                Command="{Binding LoadGraph}" />
-      </StackPanel>
-
-      <Border Grid.Column="1"
-              Padding="12"
-              BorderThickness="1"
-              BorderBrush="{ThemeResource OutlineVariantBrush}">
-        <StackPanel Spacing="8">
-          <TextBlock Text="Designer Status" />
-          <TextBlock Text="{Binding RendererStatus}" TextWrapping="Wrap" />
-          <TextBlock Text="{Binding ActiveDocumentPath}" TextWrapping="Wrap" />
-          <TextBlock Text="{Binding CanvasSummary}" />
-          <TextBlock Text="{Binding SelectionSummary}" />
-          <TextBlock Text="{Binding ViewportSummary}" />
-        </StackPanel>
-      </Border>
-
-      <Grid Grid.Column="2">
+    <Grid utu:SafeArea.Insets="VisibleBounds">
         <Grid.RowDefinitions>
-          <RowDefinition Height="Auto" />
-          <RowDefinition />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Live Node.js Preview" Margin="0,0,0,8" />
-        <TextBox Grid.Row="1"
-                 IsReadOnly="True"
-                 AcceptsReturn="True"
-                 TextWrapping="NoWrap"
-                                                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                 Text="{Binding GeneratedCode}" />
-      </Grid>
+        <utu:NavigationBar Content="{Binding Title}" />
+
+        <Grid Grid.Row="1"
+              ColumnSpacing="16"
+              Padding="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Spacing="8">
+                <Button Content="Back to Main"
+                        Command="{Binding GoToMain}" />
+                <Button Content="Add Node"
+                        Command="{Binding AddNode}" />
+                <Button Content="Select Last Node"
+                        Command="{Binding SelectLastNode}" />
+                <Button Content="Connect Last Two Nodes"
+                        Command="{Binding ConnectLastTwoNodes}" />
+                <Button Content="Delete Selected"
+                        Command="{Binding DeleteSelectedNodes}" />
+                <Button Content="Clear Selection"
+                        Command="{Binding ClearSelection}" />
+                <Button Content="Undo"
+                        IsEnabled="{Binding CanUndo}"
+                        Command="{Binding Undo}" />
+                <Button Content="Redo"
+                        IsEnabled="{Binding CanRedo}"
+                        Command="{Binding Redo}" />
+                <Button Content="Pan Left"
+                        Command="{Binding PanLeft}" />
+                <Button Content="Pan Right"
+                        Command="{Binding PanRight}" />
+                <Button Content="Pan Up"
+                        Command="{Binding PanUp}" />
+                <Button Content="Pan Down"
+                        Command="{Binding PanDown}" />
+                <Button Content="Zoom In"
+                        Command="{Binding ZoomIn}" />
+                <Button Content="Zoom Out"
+                        Command="{Binding ZoomOut}" />
+                <Button Content="Save Graph"
+                        Command="{Binding SaveGraph}" />
+                <Button Content="Load Graph"
+                        Command="{Binding LoadGraph}" />
+            </StackPanel>
+
+            <Grid Grid.Column="1" RowSpacing="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Designer Status" />
+                    <TextBlock Text="{Binding RendererStatus}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding ActiveDocumentPath}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding CanvasSummary}" />
+                    <TextBlock Text="{Binding SelectionSummary}" />
+                    <TextBlock Text="{Binding ViewportSummary}" />
+                </StackPanel>
+
+                <Border x:Name="DesignerSurface"
+                        Grid.Row="1"
+                        Background="{ThemeResource BackgroundBrush}"
+                        BorderThickness="1"
+                        BorderBrush="{ThemeResource OutlineVariantBrush}"
+                        CornerRadius="8"
+                        PointerPressed="DesignerSurface_PointerPressed"
+                        PointerMoved="DesignerSurface_PointerMoved"
+                        PointerReleased="DesignerSurface_PointerReleased"
+                        PointerCanceled="DesignerSurface_PointerReleased"
+                        PointerWheelChanged="DesignerSurface_PointerWheelChanged"
+                        DoubleTapped="DesignerSurface_DoubleTapped">
+                    <Grid>
+                        <Grid RenderTransformOrigin="0,0">
+                            <Grid.RenderTransform>
+                                <CompositeTransform TranslateX="{Binding ViewportOffsetX}"
+                                                    TranslateY="{Binding ViewportOffsetY}"
+                                                    ScaleX="{Binding ViewportZoom}"
+                                                    ScaleY="{Binding ViewportZoom}" />
+                            </Grid.RenderTransform>
+
+                            <ItemsControl ItemsSource="{Binding Edges}" IsHitTestVisible="False">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Line X1="{Binding X1}"
+                                              Y1="{Binding Y1}"
+                                              X2="{Binding X2}"
+                                              Y2="{Binding Y2}"
+                                              StrokeThickness="2"
+                                              Stroke="{ThemeResource OutlineVariantBrush}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <ItemsControl ItemsSource="{Binding Nodes}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style TargetType="ContentPresenter">
+                                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="{Binding Width}"
+                                                Height="{Binding Height}"
+                                                Padding="8"
+                                                CornerRadius="8"
+                                                BorderThickness="1"
+                                                BorderBrush="{ThemeResource OutlineVariantBrush}"
+                                                Background="{ThemeResource BackgroundBrush}"
+                                                Opacity="{Binding Opacity}">
+                                            <Grid RowSpacing="4">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="{Binding Name}" />
+                                                <TextBlock Grid.Row="1" Text="{Binding Kind}" Opacity="0.75" />
+                                                <TextBlock Grid.Row="2" Text="{Binding Id}" Opacity="0.6" FontSize="11" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <StackPanel Grid.Row="2" Spacing="4">
+                    <TextBlock Text="Selected Node Properties" />
+                    <TextBlock Text="Name" Opacity="0.8" />
+                    <TextBox IsEnabled="{Binding HasSelection}"
+                             Text="{Binding SelectedNodeName, Mode=TwoWay}" />
+                    <TextBlock Text="{Binding SelectedNodeKind}" Opacity="0.75" />
+                    <TextBlock Text="Tip: Drag nodes with left button. Pan with right or middle drag. Ctrl+click toggles selection. Alt+click a node to connect from primary selection."
+                               Opacity="0.7"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Live Node.js Preview" Margin="0,0,0,8" />
+                <TextBox Grid.Row="1"
+                         IsReadOnly="True"
+                         AcceptsReturn="True"
+                         TextWrapping="NoWrap"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                         Text="{Binding GeneratedCode}" />
+            </Grid>
+        </Grid>
     </Grid>
-  </Grid>
 </Page>
