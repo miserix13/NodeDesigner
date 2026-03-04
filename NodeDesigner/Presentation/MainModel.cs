@@ -25,4 +25,9 @@ public partial record MainModel
         await _navigator.NavigateViewModelAsync<SecondModel>(this, data: new Entity(name!));
     }
 
+    public async Task GoToDesigner()
+    {
+        await _navigator.NavigateViewModelAsync<DesignerModel>(this);
+    }
+
 }

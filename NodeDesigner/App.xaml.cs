@@ -1,4 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
+using NodeDesigner.Models.Graph;
+using NodeDesigner.Services.Designer;
 using Uno.Resizetizer;
 
 namespace NodeDesigner;
@@ -68,8 +70,11 @@ public partial class App : Application
                 .UseLocalization()
                 .ConfigureServices((context, services) =>
                 {
-                    // TODO: Register your services
-                    //services.AddSingleton<IMyService, MyService>();
+                    services.AddSingleton<IDesignerSurfaceHost, StrideDesignerSurfaceHost>();
+                    services.AddSingleton<IGraphEditorService, GraphEditorService>();
+                    services.AddSingleton<IGraphDocumentStore, GraphDocumentStore>();
+                    services.AddSingleton<INodeJsGeneratorService, NodeJsGeneratorService>();
+                    services.AddSingleton<IUndoRedoService<GraphDocument>>(_ => new UndoRedoService<GraphDocument>(state => state));
                 })
                 .UseNavigation(ReactiveViewModelMappings.ViewModelMappings, RegisterRoutes)
             );
@@ -88,6 +93,7 @@ public partial class App : Application
         views.Register(
             new ViewMap(ViewModel: typeof(ShellModel)),
             new ViewMap<MainPage, MainModel>(),
+            new ViewMap<DesignerPage, DesignerModel>(),
             new DataViewMap<SecondPage, SecondModel, Entity>()
         );
 
@@ -96,6 +102,7 @@ public partial class App : Application
                 Nested:
                 [
                     new ("Main", View: views.FindByViewModel<MainModel>(), IsDefault:true),
+                    new ("Designer", View: views.FindByViewModel<DesignerModel>()),
                     new ("Second", View: views.FindByViewModel<SecondModel>()),
                 ]
             )

@@ -24,6 +24,9 @@
         <Button Content="Go to Second Page"
             AutomationProperties.AutomationId="SecondPageButton"
             Command="{Binding GoToSecond}" />
+        <Button Content="Open Visual Designer"
+            AutomationProperties.AutomationId="OpenDesignerButton"
+            Command="{Binding GoToDesigner}" />
       </StackPanel>
     </Grid>
   </ScrollViewer>
