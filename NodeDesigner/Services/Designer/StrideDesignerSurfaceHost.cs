@@ -416,7 +416,13 @@ public sealed class StrideDesignerSurfaceHost : IDesignerSurfaceHost
                 var segmentCount = edgePoints.Count - 1;
                 EnsureEdgeSegmentCount(_scene, edgeSegments, segmentCount, edge.Id, _edgeModel);
 
+                var isSelectedEdge = selectedIds.Contains(edge.FromNodeId) || selectedIds.Contains(edge.ToNodeId);
                 var edgeThickness = ComputeEdgeThickness(edgePoints[0], edgePoints[^1]);
+
+                if (isSelectedEdge)
+                {
+                    edgeThickness = Math.Clamp(edgeThickness * 1.15f, 0.085f, 0.15f);
+                }
 
                 for (var segmentIndex = 0; segmentIndex < segmentCount; segmentIndex++)
                 {
@@ -455,7 +461,6 @@ public sealed class StrideDesignerSurfaceHost : IDesignerSurfaceHost
                     _edgeArrowEntities[edge.Id] = arrowEntity;
                 }
 
-                var isSelectedEdge = selectedIds.Contains(edge.FromNodeId) || selectedIds.Contains(edge.ToNodeId);
                 var arrowModelComponent = arrowEntity.Get<ModelComponent>();
 
                 if (arrowModelComponent is not null)
