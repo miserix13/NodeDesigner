@@ -9,4 +9,5 @@
   <Project Path="NodeDesigner/NodeDesigner.csproj">
     <Deploy />
   </Project>
+  <Project Path="NodeDesigner.Tests/NodeDesigner.Tests.csproj" />
 </Solution>
