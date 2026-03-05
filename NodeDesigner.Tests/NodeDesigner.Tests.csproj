@@ -17,6 +17,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NodeDesigner\NodeDesigner.csproj" />
+    <Compile Include="..\NodeDesigner\Models\Graph\GraphDocument.cs" Link="Shared\GraphDocument.cs" />
+    <Compile Include="..\NodeDesigner\Models\Graph\GraphEdge.cs" Link="Shared\GraphEdge.cs" />
+    <Compile Include="..\NodeDesigner\Models\Graph\GraphNode.cs" Link="Shared\GraphNode.cs" />
+    <Compile Include="..\NodeDesigner\Models\Graph\GraphPort.cs" Link="Shared\GraphPort.cs" />
+    <Compile Include="..\NodeDesigner\Models\Graph\GraphPortDirection.cs" Link="Shared\GraphPortDirection.cs" />
+    <Compile Include="..\NodeDesigner\Models\Graph\GraphPosition.cs" Link="Shared\GraphPosition.cs" />
+    <Compile Include="..\NodeDesigner\Models\Graph\GraphViewport.cs" Link="Shared\GraphViewport.cs" />
+    <Compile Include="..\NodeDesigner\Services\Designer\IGraphDocumentStore.cs" Link="Shared\IGraphDocumentStore.cs" />
+    <Compile Include="..\NodeDesigner\Services\Designer\INodeJsGeneratorService.cs" Link="Shared\INodeJsGeneratorService.cs" />
+    <Compile Include="..\NodeDesigner\Services\Designer\IUndoRedoService.cs" Link="Shared\IUndoRedoService.cs" />
+    <Compile Include="..\NodeDesigner\Services\Designer\GraphDocumentStore.cs" Link="Shared\GraphDocumentStore.cs" />
+    <Compile Include="..\NodeDesigner\Services\Designer\NodeJsGeneratorService.cs" Link="Shared\NodeJsGeneratorService.cs" />
+    <Compile Include="..\NodeDesigner\Services\Designer\UndoRedoService.cs" Link="Shared\UndoRedoService.cs" />
   </ItemGroup>
 </Project>

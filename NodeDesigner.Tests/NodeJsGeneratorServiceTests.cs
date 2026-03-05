@@ -55,6 +55,10 @@ public sealed class NodeJsGeneratorServiceTests
         var output = generator.Generate(document);
 
         Assert.Contains("id: 'node\\'\\\\alpha'", output, StringComparison.Ordinal);
-        Assert.Contains("\"name\":\"A\\\\B 'C'\"", output, StringComparison.Ordinal);
+        Assert.Contains("\"name\":\"A\\\\B", output, StringComparison.Ordinal);
+        Assert.True(
+            output.Contains("\"name\":\"A\\\\B 'C'\"", StringComparison.Ordinal)
+            || output.Contains("\"name\":\"A\\\\B \\u0027C\\u0027\"", StringComparison.Ordinal),
+            "Expected property serialization to preserve apostrophe content using literal or unicode-escaped form.");
     }
 }
